@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Thông tin cá nhân và cài đặt của học sinh/giáo viên.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "PracticeSession": {
+      "title": "Practice Session",
+      "description": "Lịch sử các phiên thực hành của học sinh.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "htmlCode": { "type": "string" },
+        "cssCode": { "type": "string" },
+        "errorsFoundCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["started", "completed"] },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "durationSeconds": { "type": "number" }
+      },
+      "required": ["userId", "startTime"]
+    },
+    "ErrorCode": {
+      "title": "Error Log",
+      "description": "Chi tiết các lỗi được AI phát hiện trong quá trình viết mã.",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string", "description": "syntax, structure, semantic" },
+        "message": { "type": "string" },
+        "suggestion": { "type": "string" },
+        "context": { "type": "string" },
+        "fixed": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionId", "userId", "type", "message"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection lưu trữ thông tin người dùng."
+    },
+    "/sessions/{sessionId}": {
+      "schema": "PracticeSession",
+      "description": "Collection lưu trữ các phiên thực hành."
+    },
+    "/error_logs/{errorId}": {
+      "schema": "ErrorCode",
+      "description": "Collection lưu trữ lịch sử lỗi để phân tích tiến độ."
+    }
+  }
+}
